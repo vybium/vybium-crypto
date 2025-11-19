@@ -1,0 +1,119 @@
+# This is an example goreleaser.yml file with some sane defaults.
+# Make sure to check the documentation at https://goreleaser.com
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+    - go vet ./...
+    - go test ./pkg/vybium-crypto/...
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+    tags:
+      - netgo
+      - osusergo
+
+archives:
+  - format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE
+      - docs/
+
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+  algorithm: sha256
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^chore:"
+
+release:
+  github:
+    owner: vybium
+    name: vybium-crypto
+  draft: false
+  prerelease: auto
+  mode: replace
+  header: |
+    ## 🚀 Vybium Crypto Release {{ .Tag }}
+
+    This release includes the following changes:
+  footer: |
+    ## 📦 Installation
+
+    ```bash
+    go get github.com/vybium/vybium-crypto@{{ .Tag }}
+    ```
+
+    ## 🔗 Links
+
+    - [Documentation](https://github.com/vybium/vybium-crypto#readme)
+    - [Changelog](https://github.com/vybium/vybium-crypto/blob/{{ .Tag }}/CHANGELOG.md)
+    - [Security Policy](https://github.com/vybium/vybium-crypto/security/policy)
+
+  extra_files:
+    - glob: docs/**/*
+      name_template: "{{ .ProjectName }}_{{ .Version }}_docs"
+
+homebrew:
+  name: vybium-crypto
+  tap:
+    owner: vybium
+    name: homebrew-tap
+  folder: Formula
+  description: "A high-performance cryptographic library for zero-knowledge proof systems"
+  homepage: "https://github.com/vybium/vybium-crypto"
+  license: "MIT"
+  test: |
+    system "#{bin}/vybium-crypto --version"
+  install: |
+    bin.install "vybium-crypto"
+  dependencies:
+    - go
+
+scoop:
+  bucket:
+    owner: vybium
+    name: scoop-bucket
+  description: "A high-performance cryptographic library for zero-knowledge proof systems"
+  homepage: "https://github.com/vybium/vybium-crypto"
+  license: "MIT"
+  url_template: "https://github.com/vybium/vybium-crypto/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+  hash:
+    url_template: "https://github.com/vybium/vybium-crypto/releases/download/{{ .Tag }}/{{ .ArtifactName }}.sha256"
+  persist:
+    - data
+  pre_install: |
+    Write-Host "Installing Vybium Crypto..."
+  post_install: |
+    Write-Host "Vybium Crypto installed successfully!"
+    Write-Host "Run 'vybium-crypto --help' to get started."
