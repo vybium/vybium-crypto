@@ -109,10 +109,12 @@ func demonstrateMMR() {
 		field.New(5000),
 	}
 
-	// Convert to digests and add to MMR
+	// Convert to digests and add to MMR, capturing proofs
+	proofs := make([]merkle.MmrMembershipProof, len(fieldElements))
 	for i, elem := range fieldElements {
 		digest := hash.NewDigest([5]field.Element{elem, field.Zero, field.Zero, field.Zero, field.Zero})
-		mmr.Append(digest)
+		proof := mmr.Append(digest)
+		proofs[i] = proof
 		fmt.Printf("   Added element %d: %v\n", i+1, elem)
 	}
 
@@ -120,13 +122,9 @@ func demonstrateMMR() {
 	root := mmr.BagPeaks()
 	fmt.Printf("   MMR Root: %v\n", root)
 
-	// Generate proof for element at index 2
+	// Demonstrate proof for element at index 2
 	index := uint64(2)
-	proof, err := mmr.GetMmrMembershipProof(index)
-	if err != nil {
-		log.Fatalf("Error generating MMR proof: %v", err)
-	}
-
+	proof := proofs[index]
 	fmt.Printf("   MMR Proof for index %d: %v\n", index, proof)
 	fmt.Printf("   MMR Proof length: %d\n", len(proof.AuthPath))
 
