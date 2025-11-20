@@ -38,14 +38,14 @@ repos:
         exclude: '^examples/'
         files: '\.go$'
         pass_filenames: false
-        args: ["./..."]
+        args: ["-tags=test", "./pkg/...", "./cmd/..."]
       - id: go-mod-tidy
         files: 'go\.mod$|go\.sum$'
       - id: go-build
         exclude: '^examples/'
         files: '\.go$'
         pass_filenames: false
-        args: ["./..."]
+        args: ["-tags=test", "./pkg/...", "./cmd/..."]
 
   # Security scanning
   - repo: https://github.com/Yelp/detect-secrets

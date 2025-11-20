@@ -116,8 +116,8 @@ func demonstrateMMR() {
 		fmt.Printf("   Added element %d: %v\n", i+1, elem)
 	}
 
-	// Get the root
-	root := mmr.GetAccumulator()
+	// Get the root (bag of peaks)
+	root := mmr.BagPeaks()
 	fmt.Printf("   MMR Root: %v\n", root)
 
 	// Generate proof for element at index 2
