@@ -3,7 +3,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/vybium/vybium-crypto/pkg/vybium-crypto/field"
 	"github.com/vybium/vybium-crypto/pkg/vybium-crypto/polynomial"
