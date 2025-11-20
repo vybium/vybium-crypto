@@ -208,4 +208,3 @@ func TestTip5SampleIndicesPowerOfTwo(t *testing.T) {
 func isPowerOfTwo(n uint32) bool {
 	return n != 0 && (n&(n-1)) == 0
 }
-

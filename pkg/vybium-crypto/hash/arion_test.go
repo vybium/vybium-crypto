@@ -654,4 +654,3 @@ func BenchmarkArionMDSMatrix(b *testing.B) {
 		_ = arion.applyMDSMatrix()
 	}
 }
-

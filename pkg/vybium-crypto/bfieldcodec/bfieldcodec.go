@@ -277,21 +277,27 @@ func DecodeSlice[T BFieldCodec](sequence []field.Element, constructor func() T) 
 			// Static length: use it directly
 			itemLength = *staticLen
 			if len(sequence) < itemLength {
-				return nil, BFieldCodecError{ErrorSequenceTooShort,
-					fmt.Sprintf("sequence too short for item %d (need %d elements)", i, itemLength)}
+				return nil, BFieldCodecError{
+					ErrorSequenceTooShort,
+					fmt.Sprintf("sequence too short for item %d (need %d elements)", i, itemLength),
+				}
 			}
 			itemSequence = sequence[:itemLength]
 			sequence = sequence[itemLength:]
 		} else {
 			// Dynamic length: read length prefix for this item
 			if len(sequence) == 0 {
-				return nil, BFieldCodecError{ErrorMissingLengthIndicator,
-					fmt.Sprintf("missing length indicator for item %d", i)}
+				return nil, BFieldCodecError{
+					ErrorMissingLengthIndicator,
+					fmt.Sprintf("missing length indicator for item %d", i),
+				}
 			}
 			itemLength = int(sequence[0].Value())
 			if len(sequence) < 1+itemLength {
-				return nil, BFieldCodecError{ErrorSequenceTooShort,
-					fmt.Sprintf("sequence too short for item %d (need %d elements after prefix)", i, itemLength)}
+				return nil, BFieldCodecError{
+					ErrorSequenceTooShort,
+					fmt.Sprintf("sequence too short for item %d (need %d elements after prefix)", i, itemLength),
+				}
 			}
 			itemSequence = sequence[1 : 1+itemLength]
 			sequence = sequence[1+itemLength:]
@@ -301,15 +307,19 @@ func DecodeSlice[T BFieldCodec](sequence []field.Element, constructor func() T) 
 		item := constructor()
 		decoded, err := item.Decode(itemSequence)
 		if err != nil {
-			return nil, BFieldCodecError{ErrorInnerDecodingFailure,
-				fmt.Sprintf("failed to decode item %d: %v", i, err)}
+			return nil, BFieldCodecError{
+				ErrorInnerDecodingFailure,
+				fmt.Sprintf("failed to decode item %d: %v", i, err),
+			}
 		}
 
 		// Type-assert the decoded value
 		typedItem, ok := decoded.(T)
 		if !ok {
-			return nil, BFieldCodecError{ErrorUnsupportedType,
-				fmt.Sprintf("decoded item %d has unexpected type", i)}
+			return nil, BFieldCodecError{
+				ErrorUnsupportedType,
+				fmt.Sprintf("decoded item %d has unexpected type", i),
+			}
 		}
 
 		result[i] = typedItem
@@ -419,13 +429,17 @@ func DecodeArray[T BFieldCodec](sequence []field.Element, length int, constructo
 		} else {
 			// For dynamic-length items in an array, we'd need additional context
 			// This is a limitation of the current design
-			return nil, BFieldCodecError{ErrorUnsupportedType,
-				"cannot decode arrays of dynamic-length items without length indicators"}
+			return nil, BFieldCodecError{
+				ErrorUnsupportedType,
+				"cannot decode arrays of dynamic-length items without length indicators",
+			}
 		}
 
 		if offset+itemLength > len(sequence) {
-			return nil, BFieldCodecError{ErrorSequenceTooShort,
-				fmt.Sprintf("sequence too short for element %d (need %d elements at offset %d)", i, itemLength, offset)}
+			return nil, BFieldCodecError{
+				ErrorSequenceTooShort,
+				fmt.Sprintf("sequence too short for element %d (need %d elements at offset %d)", i, itemLength, offset),
+			}
 		}
 
 		itemSequence = sequence[offset : offset+itemLength]
@@ -435,15 +449,19 @@ func DecodeArray[T BFieldCodec](sequence []field.Element, length int, constructo
 		item := constructor()
 		decoded, err := item.Decode(itemSequence)
 		if err != nil {
-			return nil, BFieldCodecError{ErrorInnerDecodingFailure,
-				fmt.Sprintf("failed to decode element %d: %v", i, err)}
+			return nil, BFieldCodecError{
+				ErrorInnerDecodingFailure,
+				fmt.Sprintf("failed to decode element %d: %v", i, err),
+			}
 		}
 
 		// Type-assert the decoded value
 		typedItem, ok := decoded.(T)
 		if !ok {
-			return nil, BFieldCodecError{ErrorUnsupportedType,
-				fmt.Sprintf("decoded element %d has unexpected type", i)}
+			return nil, BFieldCodecError{
+				ErrorUnsupportedType,
+				fmt.Sprintf("decoded element %d has unexpected type", i),
+			}
 		}
 
 		result[i] = typedItem
@@ -451,8 +469,10 @@ func DecodeArray[T BFieldCodec](sequence []field.Element, length int, constructo
 
 	// Validate we consumed exactly the right amount
 	if offset != len(sequence) {
-		return nil, BFieldCodecError{ErrorSequenceTooLong,
-			fmt.Sprintf("sequence length mismatch: expected %d elements, got %d", offset, len(sequence))}
+		return nil, BFieldCodecError{
+			ErrorSequenceTooLong,
+			fmt.Sprintf("sequence length mismatch: expected %d elements, got %d", offset, len(sequence)),
+		}
 	}
 
 	return result, nil

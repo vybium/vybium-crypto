@@ -11,20 +11,20 @@ import (
 //
 // This implementation provides comprehensive features for zero-knowledge proof systems:
 //
-// - Grain LFSR Parameter Generation: Dynamic generation of round constants following
-//   the Poseidon paper specification, avoiding the need for large precomputed constant files
+//   - Grain LFSR Parameter Generation: Dynamic generation of round constants following
+//     the Poseidon paper specification, avoiding the need for large precomputed constant files
 //
-// - Cauchy MDS Matrix Construction: Dynamic generation of Maximum Distance Separable
-//   matrices with guaranteed cryptographic properties
+//   - Cauchy MDS Matrix Construction: Dynamic generation of Maximum Distance Separable
+//     matrices with guaranteed cryptographic properties
 //
-// - Sponge Construction: Full absorb/squeeze functionality with variable-length
-//   input/output support for flexible hashing operations
+//   - Sponge Construction: Full absorb/squeeze functionality with variable-length
+//     input/output support for flexible hashing operations
 //
-// - Configurable Security Levels: Support for 128-bit and 256-bit security with
-//   optimal round counts and automatic parameter calculation based on field size
+//   - Configurable Security Levels: Support for 128-bit and 256-bit security with
+//     optimal round counts and automatic parameter calculation based on field size
 //
-// - Flexible Width/Rate Configuration: Support for various parameter combinations
-//   optimized for specific use cases and field characteristics
+//   - Flexible Width/Rate Configuration: Support for various parameter combinations
+//     optimized for specific use cases and field characteristics
 //
 // Based on:
 // - "Poseidon: A New Hash Function for Zero-Knowledge Proof Systems" (2023)

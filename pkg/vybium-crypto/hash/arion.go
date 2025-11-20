@@ -131,11 +131,13 @@ func (a *Arion) Permutation() {
 // This is the core non-linear component of Arion.
 //
 // Formula for branches 0 to N-2:
-//   f_i(x_0,...,x_{N-1}) = x_i^{D1} · g_i(σ_{i+1,N}) + h_i(σ_{i+1,N})
-//   where σ_{i+1,N} = Σ_{j=i+1}^{N-1} [x_j + f_j(x_0,...,x_{N-1})]
+//
+//	f_i(x_0,...,x_{N-1}) = x_i^{D1} · g_i(σ_{i+1,N}) + h_i(σ_{i+1,N})
+//	where σ_{i+1,N} = Σ_{j=i+1}^{N-1} [x_j + f_j(x_0,...,x_{N-1})]
 //
 // Formula for branch N-1:
-//   f_{N-1}(x_0,...,x_{N-1}) = x_{N-1}^E
+//
+//	f_{N-1}(x_0,...,x_{N-1}) = x_{N-1}^E
 //
 // Reference: ARION_FORMULA.md Section 2.3
 func (a *Arion) gtdsLayer() {
@@ -239,9 +241,9 @@ func (a *Arion) affineLayer(round int) {
 // For a circulant matrix circ(1, 2, ..., N), we use the efficient algorithm:
 //
 // Formula (Algorithm 1 from ARION_FORMULA.md):
-//   1. Compute σ = Σ_{i=0}^{N-1} v_i
-//   2. Compute w_0 = σ + Σ_{i=0}^{N-1} i·v_i
-//   3. Compute w_i = w_{i-1} - σ + N·v_{i-1} for i = 1 to N-1
+//  1. Compute σ = Σ_{i=0}^{N-1} v_i
+//  2. Compute w_0 = σ + Σ_{i=0}^{N-1} i·v_i
+//  3. Compute w_i = w_{i-1} - σ + N·v_{i-1} for i = 1 to N-1
 //
 // This reduces O(N²) operations to O(N) operations.
 //
@@ -298,9 +300,9 @@ func generateArionRoundConstants() [][ArionStateSize]field.Element {
 			for i, b := range seed {
 				val ^= uint64(b) << (i % 64)
 			}
-			val ^= uint64(round) * 0x9E3779B97F4A7C15 // Fibonacci hashing
-			val ^= uint64(pos) * 0x517CC1B727220A95   // Another prime
-			val = val * 6364136223846793005 + 1442695040888963407 // LCG
+			val ^= uint64(round) * 0x9E3779B97F4A7C15           // Fibonacci hashing
+			val ^= uint64(pos) * 0x517CC1B727220A95             // Another prime
+			val = val*6364136223846793005 + 1442695040888963407 // LCG
 
 			constants[round][pos] = field.New(val)
 		}
@@ -484,4 +486,3 @@ func ArionHash(input []field.Element) Digest {
 	arion := NewArion(VariableLength)
 	return arion.HashVarLen(input)
 }
-
