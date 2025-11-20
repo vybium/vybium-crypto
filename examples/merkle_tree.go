@@ -56,13 +56,12 @@ func demonstrateBasicMerkleTree() {
 }
 
 func demonstrateMerkleProofs() {
-	// Create test data
+	// Create test data (must be power of two for Merkle tree)
 	fieldLeaves := []field.Element{
 		field.New(100),
 		field.New(200),
 		field.New(300),
 		field.New(400),
-		field.New(500),
 	}
 
 	// Convert to digests
