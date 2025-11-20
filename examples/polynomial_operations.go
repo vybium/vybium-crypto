@@ -73,22 +73,17 @@ func demonstrateNTT() {
 	poly := polynomial.New(coeffs)
 	fmt.Printf("   Original polynomial: %v\n", poly)
 
-	// Apply NTT
-	nttResult, err := poly.NTT()
-	if err != nil {
-		log.Fatalf("Error applying NTT: %v", err)
-	}
-	fmt.Printf("   NTT result: %v\n", nttResult)
+	// Evaluate using NTT (this internally uses NTT for efficient evaluation)
+	domainSize := 8 // Must be power of 2
+	nttEvaluations := poly.EvaluateNTT(domainSize)
+	fmt.Printf("   NTT evaluations (domain size %d): %v\n", domainSize, nttEvaluations)
 
-	// Apply inverse NTT
-	original, err := nttResult.INTT()
-	if err != nil {
-		log.Fatalf("Error applying INTT: %v", err)
-	}
-	fmt.Printf("   INTT result: %v\n", original)
+	// Interpolate back (this uses inverse NTT)
+	reconstructed := polynomial.InterpolateNTT(nttEvaluations)
+	fmt.Printf("   Reconstructed polynomial: %v\n", reconstructed)
 
 	// Verify round-trip
-	fmt.Printf("   Round-trip verification: %t\n", poly.Equal(original))
+	fmt.Printf("   Round-trip verification: %t\n", poly.Equal(reconstructed))
 }
 
 func demonstratePolynomialMultiplication() {
@@ -110,10 +105,7 @@ func demonstratePolynomialMultiplication() {
 	fmt.Printf("   Polynomial 2: %v\n", poly2)
 
 	// Multiply using NTT
-	product, err := poly1.MulNTT(poly2)
-	if err != nil {
-		log.Fatalf("Error multiplying polynomials: %v", err)
-	}
+	product := poly1.MulNTT(poly2)
 	fmt.Printf("   Product (NTT): %v\n", product)
 
 	// Multiply using naive method
